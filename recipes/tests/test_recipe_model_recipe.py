@@ -39,9 +39,6 @@ class RecipeModelTest(RecipeTestBase):
 
     def test_recipe_preparation_steps_is_html_is_false_by_default(self):
         recipe = self.make_recipe_no_defaults()
-
-        recipe.full_clean()
-        recipe.save()
         self.assertFalse(
             recipe.preparation_steps_is_html,
             msg='Recipe preparation_steps_is_html is not False'
