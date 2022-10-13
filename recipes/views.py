@@ -1,30 +1,21 @@
-from django.core.paginator import Paginator
+
 from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from utils.pagination import make_pagination_range
+from utils.pagination import make_pagination
 
 from recipes.models import Recipe
 
+PER_PAGES = 6
 
 # Create your views here.
+
+
 def home(request):
     # Ordenando por ordem de cadastro invertida
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
 
-    try:
-        current_page = int(request.GET.get('page', 1))
-    except ValueError:
-        current_page = 1
-
-    paginator = Paginator(recipes, 6)
-    page_obj = paginator.get_page(current_page)
-
-    pagination_range = make_pagination_range(
-        paginator.page_range,
-        3,
-        current_page
-    )
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
 
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_obj,
@@ -40,8 +31,12 @@ def category(request, category_id):
         ).order_by('-id')
     )
 
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
+
     return render(request, 'recipes/pages/category.html', context={
         'recipes': recipes,
+        'recipes': page_obj,
+        'pagination_range': pagination_range,
         'title': f'Categoria | {recipes[0].category.name}'
     })
 
@@ -70,8 +65,12 @@ def search(request):
 
     ).order_by('-id')
 
+    page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
+
     return render(request, 'recipes/pages/search.html', {
         'page_title': f'{search_term} |',
         'search_term': search_term,
-        'recipes': recipes,
+        'recipes': page_obj,
+        'pagination_range': pagination_range,
+        'additional_url_query': f'&q={search_term}',
     })
