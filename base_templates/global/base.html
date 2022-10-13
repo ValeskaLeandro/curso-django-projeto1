@@ -7,16 +7,16 @@
     <title>{% block title %}{% endblock title %} Receitas</title>
 </head>
 <body>
-    
-    {% include 'recipes/partials/header.html'%}
-    {% include 'recipes/partials/search.html'%}
-    <main class="main-content-container">
-       {% block content %}{% endblock content %}
+    <div class="fixed_footer">
+        {% include 'recipes/partials/header.html'%}
+        {% include 'recipes/partials/search.html'%}
+        <main class="main-content-container">
+            {% block content %}{% endblock content %}
 
-    </main>
-
+        </main>
+    </div>
     {% include 'recipes/partials/footer.html' %}
-
+    
 </body>
 
 </html>
