@@ -1,3 +1,5 @@
+from tkinter import Widget
+
 from django import forms
 from django.contrib.auth.models import User
 
@@ -12,3 +14,7 @@ class RegisterForm(forms.ModelForm):
             'email',
             'password',
         ]
+
+    widgets = {
+        'password': forms.PasswordInput(attrs={'placeholder': 'Escolha sua senha.'}),
+    }
