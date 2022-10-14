@@ -1,4 +1,5 @@
 
+from django.contrib import messages
 from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
@@ -15,6 +16,7 @@ def home(request):
     # Ordenando por ordem de cadastro invertida
     recipes = Recipe.objects.filter(is_published=True).order_by('-id')
 
+    messages.error(request, 'Epa, é um teste aqui.')
     page_obj, pagination_range = make_pagination(request, recipes, PER_PAGES)
 
     return render(request, 'recipes/pages/home.html', context={

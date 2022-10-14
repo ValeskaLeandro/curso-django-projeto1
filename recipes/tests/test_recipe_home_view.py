@@ -50,14 +50,3 @@ class RecipeHomeViewTest(RecipeTestBase):
             '<h1>Nenhuma receita encontrada no momento!</h1>',
             response.content.decode('utf-8')
         )
-
-    def test_recipe_home_is_paginated(self):
-        for i in range(8):
-            kwargs = {'slug': f'r{i}', 'author_data': {'username': f'u{i}'}}
-            self.make_recipe(**kwargs)
-
-        response = self.client.get(reverse('recipes:home'))
-        recipes = response.context['recipes']
-        paginator = recipes.paginator
-
-        self.assertEqual(paginator.num_pages, 2)
