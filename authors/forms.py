@@ -49,12 +49,14 @@ class RegisterForm(forms.ModelForm):
             'uma letra minúscula e um número. O comprimento deve ser '
             'pelo menos 8 caracteres.'
         ),
-        validators=[strong_password]
+        validators=[strong_password],
+        label='Senha'
     )
 
     password2 = forms.CharField(
         required=True,
-        widget=forms.PasswordInput()
+        widget=forms.PasswordInput(),
+        label='Repetir senha'
     )
 
     class Meta:
@@ -72,7 +74,6 @@ class RegisterForm(forms.ModelForm):
         'first_name': 'Nome',
         'last_name': 'Sobrenome',
         'email': 'E-mail',
-        'password': 'Senha',
     }
 
     help_texts = {
