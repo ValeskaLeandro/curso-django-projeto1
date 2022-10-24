@@ -19,9 +19,9 @@ def strong_password(password):
 
     if not regex.match(password):
         raise ValidationError((
-            'Password must have at least one uppercase letter, '
-            'one lowercase letter and one number. The length should be '
-            'at least 8 characters.'
+            'A senha deve ter pelo menos uma letra maiúscula,'
+            'uma letra minúscula e um número. O comprimento deve ser '
+            'pelo menos 8 caracteres.'
         ),
             code='invalid'
         )
@@ -34,13 +34,13 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['email'], 'Ex: email@email.com')
         add_placeholder(self.fields['first_name'], 'Ex.: Maria')
         add_placeholder(self.fields['last_name'], 'Ex.: Silva')
-        add_attr(self.fields['username'], 'css', 'a-css-class')
+        add_placeholder(self.fields['password'], 'Digite sua senha')
+        add_placeholder(self.fields['password2'], 'Repita sua senha')
 
     password = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Digite sua senha'
-        }),
+        widget=forms.PasswordInput(),
+
         error_messages={
             'required': 'A senha não deve estar vazia.'
         },
@@ -54,9 +54,7 @@ class RegisterForm(forms.ModelForm):
 
     password2 = forms.CharField(
         required=True,
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Repita sua senha'
-        })
+        widget=forms.PasswordInput()
     )
 
     class Meta:
@@ -84,16 +82,6 @@ class RegisterForm(forms.ModelForm):
         'username': {
             'required': 'Este campo não deve estar vazio.',
         }
-    }
-
-    widgets = {
-        'first_name': forms.TextInput(attrs={
-            'placeholder': 'Digite seu nome de usuário aqui.',
-            'class': 'input text-input'
-        }),
-        'password': forms.PasswordInput(attrs={
-            'placeholder': 'Digite sua senha aqui.'
-        })
     }
 
     def clean_password(self):
