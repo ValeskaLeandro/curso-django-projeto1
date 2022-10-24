@@ -37,6 +37,33 @@ class RegisterForm(forms.ModelForm):
         add_placeholder(self.fields['password'], 'Digite sua senha')
         add_placeholder(self.fields['password2'], 'Repita sua senha')
 
+    username = forms.CharField(
+        label='Usuário',
+        help_text=(
+            'Nome de usuário deve ter letras, números ou um desses caracteres @.+-_. '
+            'O comprimento deve estar entre 4 e 150 caracteres.'
+        ),
+        error_messages={
+            'required': 'Este campo não deve estar vazio.',
+            'min_length': 'O nome de usuário deve ter pelo menos 4 caracteres',
+            'max_length': 'O nome de usuário deve ter menos de 150 caracteres',
+        },
+        min_length=4, max_length=150,
+    )
+    first_name = forms.CharField(
+        error_messages={'required': 'Digite seu nome.'},
+        label='Nome'
+    )
+    last_name = forms.CharField(
+        error_messages={'required': 'Digite seu sobrenome.'},
+        label='Sobrenome'
+    )
+    email = forms.EmailField(
+        error_messages={'required': 'E-mail é obrigatório'},
+        label='E-mail',
+        help_text='O e-mail deve ser válido.',
+    )
+
     password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
@@ -56,7 +83,10 @@ class RegisterForm(forms.ModelForm):
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
-        label='Repetir senha'
+        label='Repetir senha',
+        error_messages={
+            'required': 'Por favor, repita sua senha.'
+        },
     )
 
     class Meta:
@@ -68,22 +98,6 @@ class RegisterForm(forms.ModelForm):
             'email',
             'password',
         ]
-
-    labels = {
-        'username': 'Usuário',
-        'first_name': 'Nome',
-        'last_name': 'Sobrenome',
-        'email': 'E-mail',
-    }
-
-    help_texts = {
-        'email': 'O e-mail deve ser válido.',
-    }
-    error_messages = {
-        'username': {
-            'required': 'Este campo não deve estar vazio.',
-        }
-    }
 
     def clean_password(self):
         data = self.cleaned_data.get('password')
