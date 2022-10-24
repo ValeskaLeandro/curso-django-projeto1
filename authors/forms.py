@@ -1,8 +1,10 @@
+import email
 import re
 
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from genericpath import exists
 
 
 def add_attr(field, attr_name, attr_new_val):
@@ -122,6 +124,17 @@ class RegisterForm(forms.ModelForm):
             )
 
         return data
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '')
+        exists = User.objects.filter(email=email).exists()
+
+        if exists:
+            raise ValidationError(
+                'User e-mail is already in use', code='invalid',
+            )
+
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
