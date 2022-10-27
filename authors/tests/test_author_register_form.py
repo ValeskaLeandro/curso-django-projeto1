@@ -7,7 +7,7 @@ from parameterized import parameterized
 
 class AuthorRegisterFormUnitTest(TestCase):
     @parameterized.expand([
-        ('username', 'Seu usuário'),
+        ('username', 'Digite seu usuário'),
         ('email', 'Ex: email@email.com'),
         ('first_name', 'Ex.: Maria'),
         ('last_name', 'Ex.: Silva'),
