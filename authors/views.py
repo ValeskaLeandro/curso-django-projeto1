@@ -1,15 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http.response import Http404
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from recipes.models import Recipe
 
-from .forms import LoginForm, RegisterForm
+from authors.forms import LoginForm, RegisterForm
 
 
-# Create your views here.
 def register_view(request):
     register_form_data = request.session.get('register_form_data', None)
     form = RegisterForm(register_form_data)
@@ -31,11 +30,11 @@ def register_create(request):
         user = form.save(commit=False)
         user.set_password(user.password)
         user.save()
-        messages.success(
-            request, 'Usuário criado com sucesso! Pro favor, faça seu login.')
+        messages.success(request, 'Your user is created, please log in.')
 
         del (request.session['register_form_data'])
         return redirect(reverse('authors:login'))
+
     return redirect('authors:register')
 
 
@@ -60,12 +59,12 @@ def login_create(request):
         )
 
         if authenticated_user is not None:
-            messages.success(request, 'Você está logado.')
+            messages.success(request, 'Your are logged in.')
             login(request, authenticated_user)
         else:
-            messages.error(request, 'Credenciais inválidas')
+            messages.error(request, 'Invalid credentials')
     else:
-        messages.error(request, 'Usuário ou senha incorreta.')
+        messages.error(request, 'Invalid username or password')
 
     return redirect(reverse('authors:dashboard'))
 
@@ -73,14 +72,14 @@ def login_create(request):
 @login_required(login_url='authors:login', redirect_field_name='next')
 def logout_view(request):
     if not request.POST:
-        messages.error(request, 'Solicitação de logout inválida.')
+        messages.error(request, 'Invalid logout request')
         return redirect(reverse('authors:login'))
 
     if request.POST.get('username') != request.user.username:
-        messages.error(request, 'Usuário de logout inválido.')
+        messages.error(request, 'Invalid logout user')
         return redirect(reverse('authors:login'))
 
-    messages.success(request, 'Desconectado com sucesso!')
+    messages.success(request, 'Logged out successfully')
     logout(request)
     return redirect(reverse('authors:login'))
 
