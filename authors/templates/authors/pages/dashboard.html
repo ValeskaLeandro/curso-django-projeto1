@@ -8,5 +8,20 @@
   </div>
 
   {% include 'global/partials/messages.html' %}
-  
+
+  <div class="authors-dashboard-container">
+    <h3>Suas receitas</h3>
+
+    <ul>
+      {% for recipe in recipes %}
+        <li>
+          <a href="#">{{ recipe.title }}</a>
+        </li>
+      {% empty %}
+        <li>
+          <p>Você não tem receitas, por favor, crie uma.</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock content %}
