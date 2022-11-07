@@ -7,6 +7,7 @@ from django.urls import reverse
 from recipes.models import Recipe
 
 from authors.forms import LoginForm, RegisterForm
+from authors.forms.recipe_form import AuthorRecipeForm
 
 
 def register_view(request):
@@ -59,12 +60,12 @@ def login_create(request):
         )
 
         if authenticated_user is not None:
-            messages.success(request, 'Your are logged in.')
+            messages.success(request, 'Você está logado.')
             login(request, authenticated_user)
         else:
-            messages.error(request, 'Invalid credentials')
+            messages.error(request, 'Credenciais inválidas')
     else:
-        messages.error(request, 'Invalid username or password')
+        messages.error(request, 'Usuário ou senha incorretos')
 
     return redirect(reverse('authors:dashboard'))
 
@@ -72,14 +73,14 @@ def login_create(request):
 @login_required(login_url='authors:login', redirect_field_name='next')
 def logout_view(request):
     if not request.POST:
-        messages.error(request, 'Invalid logout request')
+        messages.error(request, 'Solicitação de logout inválida')
         return redirect(reverse('authors:login'))
 
     if request.POST.get('username') != request.user.username:
-        messages.error(request, 'Invalid logout user')
+        messages.error(request, 'Usuário de logout inválido')
         return redirect(reverse('authors:login'))
 
-    messages.success(request, 'Logged out successfully')
+    messages.success(request, 'Desconectado com sucesso!')
     logout(request)
     return redirect(reverse('authors:login'))
 
@@ -95,5 +96,30 @@ def dashboard(request):
         'authors/pages/dashboard.html',
         context={
             'recipes': recipes,
+        }
+    )
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def dashboard_recipe_edit(request, id):
+    recipe = Recipe.objects.filter(
+        is_published=False,
+        author=request.user,
+        pk=id,
+    ).first()
+
+    if not recipe:
+        raise Http404()
+
+    form = AuthorRecipeForm(
+        data=request.POST or None,
+        instance=recipe
+    )
+
+    return render(
+        request,
+        'authors/pages/dashboard_recipe.html',
+        context={
+            'form': form
         }
     )
