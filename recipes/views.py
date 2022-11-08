@@ -4,12 +4,35 @@ from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.http.response import Http404
+from django.shortcuts import render
 from django.views.generic import DetailView, ListView
-from utils.pagination import make_pagination
 
 from recipes.models import Recipe
+from utils.pagination import make_pagination
 
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
+
+
+def theory(request, *args, **kwargs):
+    recipes = Recipe.objects.filter(
+        Q(
+            Q(title__icontains='da',
+              id__gt=2,
+              is_published=True,) |
+            Q(
+                id__gt=1000
+            )
+        )
+    )[:10]
+
+    context = {
+        'recipes': recipes
+    }
+    return render(
+        request,
+        'recipes/pages/theory.html',
+        context=context
+    )
 
 
 class RecipeListViewBase(ListView):
@@ -23,6 +46,7 @@ class RecipeListViewBase(ListView):
         qs = qs.filter(
             is_published=True,
         )
+        qs = qs.select_related('author', 'category')
         return qs
 
     def get_context_data(self, *args, **kwargs):
