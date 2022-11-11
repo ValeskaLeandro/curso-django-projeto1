@@ -4,7 +4,7 @@
   for (const form of forms) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      const confirmed = confirm('Are you sure?');
+      const confirmed = confirm('Você tem certeza?');
       if (confirmed) {
         form.submit();
       }
